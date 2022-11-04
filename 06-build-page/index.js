@@ -1,5 +1,5 @@
 import { mkdir, readdir, copyFile } from 'node:fs/promises'
-import { createReadStream, createWriteStream, readFile, open, writeFile, read, Dir } from 'node:fs'
+import { createReadStream, createWriteStream, readFile } from 'node:fs'
 import path from 'node:path'
 const Folder = new URL('project-dist', import.meta.url);
 const createDir = await mkdir(Folder, { recursive: true });
@@ -71,10 +71,3 @@ html.forEach((item, index)=> {
     }
     
 })
-  
-  
-
-
-
-
-
