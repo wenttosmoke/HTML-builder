@@ -1,4 +1,5 @@
 import { mkdir, copyFile, constants,  readdir, cp } from 'node:fs/promises';
+import { lstat } from 'node:fs';
 import path from 'node:path';
 const Folder = new URL('files-copy', import.meta.url);
 const createDir = await mkdir(Folder, { recursive: true });
@@ -8,14 +9,18 @@ async function copyDirectory(src, dest) {
     mkdir(dest, { recursive: true })
     let files = await readdir(src, {withFileTypes: true})
     for(let file of files) {
-        if (!path.extname(file['name'])) {
-            copyDirectory(src + '/' + file['name'], dest + '/' + file['name'])
-        }
-        else {
-            copyFile(src + '/' + file['name'], dest + '/' + file['name'])
-        }
+        
+        lstat(path.join(src, file['name']), (err, stats) => {
+
+            if(err)
+                return console.log(err); //Handle error
+        
+            if (stats.isFile()) {
+                copyFile(path.join(src, file['name']), path.join(dest, file['name'])) 
+            }
+            else {
+                copyDirectory(path.join(src, file['name']), path.join(dest, file['name']))
+            } 
+        }); 
     }
-    
 }
-
-
